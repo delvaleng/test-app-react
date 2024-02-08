@@ -1,6 +1,6 @@
 const express = require("express");
 const app     = express();
-const mysql   =  require("mysql");
+const mysql   = require("mysql");
 const cors    = require("cors");
 
 app.use(cors());
@@ -39,10 +39,10 @@ app.post("/products/list", (req, res ) =>{
     var query  = "SELECT * FROM products where 1 = 1 ";
 
     if ( price != null && price != ''){
-        query += "and price = "+[price];
+        query += " and price = "+[parseFloat(price)];
     }
     if (category != null && category != ''){
-        query += "and category_id = "+[category];
+        query += " and category_id = "+[category];
     }
 
     db.query(query, 

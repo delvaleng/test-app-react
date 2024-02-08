@@ -1,20 +1,6 @@
-import React, { useState } from 'react'
-import Axios from 'axios';
+import React from 'react'
 
-export default function TableProducts() {
-
-    const [listProducts, setListProducts] = useState([]);
-
-    React.useEffect(() => {
-        async function getProducts() {
-            await Axios.post("http://localhost:3001/products/list").then(
-                (response) => {
-                    setListProducts(response.data);
-                    console.log("List products ", setListProducts);
-                })
-        }
-        getProducts();
-    }, []);
+export default function TableProducts({ listProducts }) {
 
     return (
         <div>

@@ -1,15 +1,33 @@
 import React, { useState } from 'react'
-import SelectCategory from './SelectCategory';
+import Select from "react-select";
+import Axios from 'axios';
 
-export default function SearchProducts() {
+export default function SearchProducts({
+    onChangePrice,
+    onChangeCategory
+}
+) {
 
-    const { firstname, lastname } = props;
 
     const [price, setPrice] = useState("");
+    const [listCategories, setListCategories] = useState([]);
 
     const textOnChangePrice = (event) => {
-        setPrice(event.target.value)
+        const newValue = event.target.value;
+        setPrice(newValue)
+        onChangePrice(newValue)
     }
+
+    React.useEffect(() => {
+        async function getCategories() {
+            await Axios.get("http://localhost:3001/categories/list").then(
+                (response) => {
+                    setListCategories(response.data);
+                    // console.log("List categories ", listCategories);
+                })
+        }
+        getCategories();
+    }, []);
 
     return (
         <div className="container" >
@@ -21,7 +39,7 @@ export default function SearchProducts() {
                             <span className="input-group-text" id="basic-addon1">Price</span>
                         </div>
                         <input
-                            type="number"
+                            type="text"
                             value={price}
                             onChange={textOnChangePrice}
                             className="form-control"
@@ -36,7 +54,13 @@ export default function SearchProducts() {
                         <div className="input-group-prepend">
                             <span className="input-group-text" id="basic-addon1">Category</span>
                         </div>
-                        <SelectCategory category="" firstname="Andres" lastname="Garcia" />
+                        <div style={{ width: '80%' }}>
+                            <Select
+                                className="select-custom-className"
+                                options={listCategories}
+                                onChange={onChangeCategory}
+                            />
+                        </div>
                     </div>
 
                 </div>
@@ -45,7 +69,3 @@ export default function SearchProducts() {
     );
 }
 
-SearchProducts.defaultProps({
-    firstname: "Agustin",
-    lastname: "Navarro"
-})

@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
-import Axios from 'axios';
+import Axios from 'axios'
 import Button from 'react-bootstrap/Button'
+import Select from "react-select"
 
 
 export default function Products() {
 
     const [name, setName] = useState("");
     const [price, setPrice] = useState("");
-    // const [category, setCategory] = useState(1);
+    const [category, setCategory] = useState("");
+    const [listCategories, setListCategories] = useState([]);
 
 
     const textOnChangeName = (event) => {
@@ -17,21 +19,37 @@ export default function Products() {
     const textOnChangePrice = (event) => {
         setPrice(event.target.value)
     }
+    const handleChangeCategory = (e) => {
+        setCategory(e.value)
+    }
 
 
-    const saveForm = () => {
+
+    const saveFormProduct = () => {
 
         Axios.post("http://localhost:3001/products/create", {
             name: name,
             price: price,
-            // category: category,
+            category: category,
         }).then(() => {
-            // getProducts();
+            setName("")
+            setPrice("")
+            setCategory(null)
             console.log("Save successfully");
+
         })
-
-
     }
+
+    React.useEffect(() => {
+        async function getCategories() {
+            await Axios.get("http://localhost:3001/categories/list").then(
+                (response) => {
+                    setListCategories(response.data);
+                    // console.log("List categories ", listCategories);
+                })
+        }
+        getCategories();
+    }, []);
 
 
     return (
@@ -39,13 +57,13 @@ export default function Products() {
             <br />
 
             <div className="card">
-                <h5 className="card-header">Producto</h5>
+                <h5 className="card-header">New Product</h5>
                 <div className="card-body">
 
                     {/* input name */}
                     <div className="input-group mb-3">
                         <div className="input-group-prepend">
-                            <span className="input-group-text" id="basic-addon1">Nombre</span>
+                            <span className="input-group-text" id="basic-addon1">Name</span>
                         </div>
                         <input
                             type="text"
@@ -60,7 +78,7 @@ export default function Products() {
                     {/* input price */}
                     <div className="input-group mb-3">
                         <div className="input-group-prepend">
-                            <span className="input-group-text" id="basic-addon1">Precio</span>
+                            <span className="input-group-text" id="basic-addon1">Price</span>
                         </div>
                         <input
                             type="number"
@@ -71,7 +89,23 @@ export default function Products() {
                         />
                     </div>
 
-                    <Button onClick={saveForm} className="btn btn-success">Registrar</Button>
+                    <div className="input-group mb-3">
+                        <div className="input-group-prepend">
+                            <span className="input-group-text" id="basic-addon1">Category</span>
+                        </div>
+                        <div style={{ width: '80%' }}>
+                            <Select
+                                className="select-custom-className"
+                                options={listCategories}
+                                onChange={handleChangeCategory}
+
+                            />
+                        </div>
+                    </div>
+
+
+
+                    <Button onClick={saveFormProduct} className="btn btn-success">Registrar</Button>
 
                 </div>
             </div>
