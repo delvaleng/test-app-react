@@ -36,7 +36,7 @@ app.post("/products/list", (req, res ) =>{
     const price    = req.body.price;
     const category = req.body.category;
 
-    var query  = "SELECT * FROM products where 1 = 1 ";
+    var query  = "SELECT p.id as id, p.description as description, p.price as price, c.description as category_id FROM products as p  LEFT JOIN categories AS c on c.id=p.category_id where 1 = 1 ";
 
     if ( price != null && price != ''){
         query += " and price = "+[parseFloat(price)];
